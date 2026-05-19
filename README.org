@@ -1,0 +1,54 @@
+#+TITLE: LexiBar - macOS menu bar vocabulary app
+#+AUTHOR: Andrey Pudov
+#+DATE: <2026-05-19 Tue>
+#+OPTIONS: toc:nil
+
+* Overview
+
+*LexiBar* is a lightweight, modern macOS application designed to support continuous vocabulary learning through subtle, high‑frequency exposure. It lives in the macOS menu bar, displaying a rotating sequence of words and their translations without interrupting your workflow.
+
+*LexiBar* is intentionally minimalistic: no windows, no clutter, no distractions — just clean, ambient reinforcement of the vocabulary you want to learn.
+
+* Features
+
+- Native macOS menu‑bar integration
+- Automatic cycling of vocabulary pairs
+- Clean, unobtrusive presentation
+- Support for user‑provided vocabulary files
+- Fast, lightweight Swift implementation
+
+*LexiBar* is ideal for language learners who prefer a passive, always‑visible learning tool that blends seamlessly into their daily computing environment.
+
+* Loading Vocabulary
+
+*LexiBar* reads vocabulary from a simple CSV file containing two columns:
+
+#+begin_example
+Original,Translation
+猫,cat
+犬,dog
+水,water
+空,sky
+#+end_example
+
+** Format requirements:
+
+- Two columns: Original and Translation
+- Comma‑separated (,), UTF‑8 encoded
+- Header row is optional
+- Each row represents one vocabulary pair
+
+Once loaded, *LexiBar* cycles through the entries at a regular interval, displaying each pair in the menu bar.
+
+* Installation & Usage
+
+1. Launch *LexiBar* on macOS (macOS 12+ recommended).
+2. The *LexiBar* icon will appear in the menu bar.
+3. Load your CSV vocabulary file through the app’s menu.
+4. Words will begin cycling automatically.
+
+*LexiBar* runs entirely from the menu bar and can be quit at any time from its dropdown menu.
+
+* License
+
+*LexiBar* is distributed under the Apache License 2.0.
