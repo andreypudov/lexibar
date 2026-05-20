@@ -1,35 +1,57 @@
-//
-//  AppDelegate.swift
-//  LexiBar
-//
-//  Created by Andrey Pudov on 19/05/2026.
-//
-
-import SwiftUI
+import AppKit
 
 class AppDelegate: NSObject, NSApplicationDelegate {
-    var statusItem: NSStatusItem!
-    var Timer: timer?
-
-    let words = [
-        "猫 — ねこ — cat",
-        "犬 — いぬ — dog",
-        "水 — みず — water",
-        "空 — そら — sky"
-    ]
-    var index = 0
+    private var statusItem: NSStatusItem!
+    private var timer: Timer?
+    private let vocabularyController = VocabularyController()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-        updateMenuBarText()
+        setupMenu()
+        showNextWord()
 
-        timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { _ in
-            self.updateMenuBarText()
+        timer = Timer.scheduledTimer(withTimeInterval: AppSettings.shared.wordInterval, repeats: true) { [weak self] _ in
+            self?.showNextWord()
         }
     }
 
-    func updateMenuBarText() {
-        index = (index + 1) % words.count
-        statusItem.button?.title = words[index]
+    private func setupMenu() {
+        let menu = NSMenu()
+
+        let openItem = NSMenuItem(
+            title: "Open Vocabulary",
+            action: #selector(openVocabulary),
+            keyEquivalent: "o"
+        )
+        menu.addItem(openItem)
+
+        menu.addItem(.separator())
+
+        let quitItem = NSMenuItem(
+            title: "Quit",
+            action: #selector(NSApplication.terminate(_:)),
+            keyEquivalent: "q"
+        )
+        menu.addItem(quitItem)
+
+        statusItem.menu = menu
+    }
+
+    @objc private func openVocabulary() {
+        let panel = NSOpenPanel()
+        panel.title = "Open Vocabulary"
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = false
+        panel.canChooseFiles = true
+
+        if panel.runModal() == .OK, let url = panel.url {
+            vocabularyController.load(from: url)
+            showNextWord()
+        }
+    }
+
+    private func showNextWord() {
+        statusItem.button?.title = vocabularyController.next()
     }
 }
+

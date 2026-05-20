@@ -1,0 +1,19 @@
+import Foundation
+
+class VocabularyController {
+    private var entries: [VocabularyEntry] = []
+    private var index = -1
+
+    func next() -> String {
+        guard !entries.isEmpty else { return "LexiBar: Hello!" }
+        index = (index + 1) % entries.count
+        return entries[index].displayText
+    }
+
+    func load(from url: URL) {
+        let loaded = VocabularyLoader.load(from: url)
+        guard !loaded.isEmpty else { return }
+        entries = loaded
+        index = -1
+    }
+}
