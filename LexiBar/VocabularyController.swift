@@ -4,6 +4,11 @@ class VocabularyController {
     private var entries: [VocabularyEntry] = []
     private var index = -1
 
+    var currentEntry: VocabularyEntry? {
+        guard index >= 0, index < entries.count else { return nil }
+        return entries[index]
+    }
+
     func next() -> String {
         guard !entries.isEmpty else { return "LexiBar: Hello!" }
         index = (index + 1) % entries.count

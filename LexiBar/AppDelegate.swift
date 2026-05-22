@@ -4,6 +4,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem!
     private var timer: Timer?
     private let vocabularyController = VocabularyController()
+    private let vocabularySpeaker = VocabularySpeaker()
+    private var pronounceCardsMenuItem: NSMenuItem?
+    private var isPronunciationEnabled = false
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
@@ -23,7 +26,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             action: #selector(openVocabulary),
             keyEquivalent: "o"
         )
+        openItem.target = self
         menu.addItem(openItem)
+
+        let speakItem = NSMenuItem(
+            title: "Pronounce Cards",
+            action: #selector(togglePronounceCards),
+            keyEquivalent: "p"
+        )
+        speakItem.target = self
+        speakItem.state = .off
+        pronounceCardsMenuItem = speakItem
+        menu.addItem(speakItem)
 
         menu.addItem(.separator())
 
@@ -50,8 +64,26 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
+    @objc private func togglePronounceCards() {
+        isPronunciationEnabled.toggle()
+        pronounceCardsMenuItem?.state = isPronunciationEnabled ? .on : .off
+
+        guard isPronunciationEnabled else {
+            vocabularySpeaker.stop()
+            return
+        }
+
+        if let entry = vocabularyController.currentEntry {
+            vocabularySpeaker.speak(entry: entry)
+        }
+    }
+
     private func showNextWord() {
         statusItem.button?.title = vocabularyController.next()
+
+        if isPronunciationEnabled, let entry = vocabularyController.currentEntry {
+            vocabularySpeaker.speak(entry: entry)
+        }
     }
 }
 

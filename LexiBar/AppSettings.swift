@@ -8,7 +8,7 @@ class AppSettings {
     }
 
     private enum Defaults {
-        static let wordInterval: TimeInterval = 6
+        static let wordInterval: TimeInterval = 8
     }
 
     var wordInterval: TimeInterval {
