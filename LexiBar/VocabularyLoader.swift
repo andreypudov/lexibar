@@ -19,9 +19,6 @@ enum VocabularyLoader {
         let original = columns[0].trimmingCharacters(in: .whitespaces)
         let translation = columns[1].trimmingCharacters(in: .whitespaces)
 
-        // Skip the optional header row
-        guard original.caseInsensitiveCompare("original") != .orderedSame else { return nil }
-
         return VocabularyEntry(original: original, translation: translation)
     }
 }
