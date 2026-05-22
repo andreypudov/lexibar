@@ -4,6 +4,10 @@ class VocabularyController {
     private var entries: [VocabularyEntry] = []
     private var index = -1
 
+    var allEntries: [VocabularyEntry] {
+        entries
+    }
+
     var currentEntry: VocabularyEntry? {
         guard index >= 0, index < entries.count else { return nil }
         return entries[index]

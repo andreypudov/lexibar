@@ -60,6 +60,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         if panel.runModal() == .OK, let url = panel.url {
             vocabularyController.load(from: url)
+            vocabularySpeaker.configureLanguages(entries: vocabularyController.allEntries)
             showNextWord()
         }
     }

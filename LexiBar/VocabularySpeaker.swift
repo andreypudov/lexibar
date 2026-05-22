@@ -4,26 +4,37 @@ import NaturalLanguage
 
 final class VocabularySpeaker {
     private let speechSynthesizer = AVSpeechSynthesizer()
+    private var originalLanguageCode = "en-US"
+    private var translationLanguageCode = "en-US"
 
     func stop() {
         speechSynthesizer.stopSpeaking(at: .immediate)
     }
 
+    func configureLanguages(entries: [VocabularyEntry]) {
+        let originalText = entries
+            .map(\.original)
+            .joined(separator: "\n")
+        let translationText = entries
+            .map(\.translation)
+            .joined(separator: "\n")
+
+        originalLanguageCode = detectLanguageCode(for: originalText)
+        translationLanguageCode = detectLanguageCode(for: translationText)
+    }
+
     func speak(entry: VocabularyEntry) {
         speechSynthesizer.stopSpeaking(at: .immediate)
 
-        let originalLanguage = detectLanguageCode(for: entry.original)
-        let translationLanguage = detectLanguageCode(for: entry.translation)
-
         let originalUtterance = makeUtterance(
             text: entry.original,
-            languageCode: originalLanguage
+            languageCode: originalLanguageCode
         )
         speechSynthesizer.speak(originalUtterance)
 
         let translationUtterance = makeUtterance(
             text: entry.translation,
-            languageCode: translationLanguage,
+            languageCode: translationLanguageCode,
             preUtteranceDelay: 0.25
         )
         speechSynthesizer.speak(translationUtterance)
