@@ -6,6 +6,8 @@ final class VocabularySpeaker {
     private let speechSynthesizer = AVSpeechSynthesizer()
     private var originalLanguageCode = "en-US"
     private var translationLanguageCode = "en-US"
+    private var originalVoice = AVSpeechSynthesisVoice(language: "en-US")
+    private var translationVoice = AVSpeechSynthesisVoice(language: "en-US")
 
     func stop() {
         speechSynthesizer.stopSpeaking(at: .immediate)
@@ -21,22 +23,20 @@ final class VocabularySpeaker {
 
         originalLanguageCode = detectLanguageCode(for: originalText)
         translationLanguageCode = detectLanguageCode(for: translationText)
+        originalVoice = preferredVoice(for: originalLanguageCode)
+        translationVoice = preferredVoice(for: translationLanguageCode)
     }
 
     func speak(entry: VocabularyEntry) {
         speechSynthesizer.stopSpeaking(at: .immediate)
 
-        let originalUtterance = makeUtterance(
-            text: entry.original,
-            languageCode: originalLanguageCode
-        )
+        let originalUtterance = AVSpeechUtterance(string: entry.original)
+        originalUtterance.voice = originalVoice
         speechSynthesizer.speak(originalUtterance)
 
-        let translationUtterance = makeUtterance(
-            text: entry.translation,
-            languageCode: translationLanguageCode,
-            preUtteranceDelay: 0.25
-        )
+        let translationUtterance = AVSpeechUtterance(string: entry.translation)
+        translationUtterance.preUtteranceDelay = 0.25
+        translationUtterance.voice = translationVoice
         speechSynthesizer.speak(translationUtterance)
     }
 
@@ -44,21 +44,6 @@ final class VocabularySpeaker {
         let recognizer = NLLanguageRecognizer()
         recognizer.processString(text)
         return recognizer.dominantLanguage?.rawValue ?? "en-US"
-    }
-
-    private func makeUtterance(
-        text: String,
-        languageCode: String,
-        preUtteranceDelay: TimeInterval = 0
-    ) -> AVSpeechUtterance {
-        let utterance = AVSpeechUtterance(string: text)
-        utterance.preUtteranceDelay = preUtteranceDelay
-
-        if let voice = preferredVoice(for: languageCode) {
-            utterance.voice = voice
-        }
-
-        return utterance
     }
 
     private func preferredVoice(for languageCode: String) -> AVSpeechSynthesisVoice? {
